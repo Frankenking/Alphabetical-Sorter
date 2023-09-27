@@ -24,19 +24,20 @@ class App(customtkinter.CTk):
         self.resetDims()
         
             #appFrame to container widgets
+        self.tempbutton = customtkinter.CTkButton(master=self)
+        self.tempbutton.place(x = 20, y = 50)
+        
         self.appFrame = customtkinter.CTkFrame(master=self)
-        self.appFrame.pack(pady = 25, padx = 60, fill="both", expand=True)
-    
-
+        self.appFrame.pack(pady = 45, padx = 175, fill="both", expand=True)
         
+        self.dataTextbox = customtkinter.CTkLabel(master = self.appFrame, width=5,height=5,text="test")
+        self.dataTextbox.place(x = 0, y = 0)
         self.main()
-        
-        
-        
-        
+
     def main(self) -> None:
+        
         #CONSTs
-        self.Alphabet = list(string.ascii_lowercase)
+        self.Alphabet = tuple(string.ascii_lowercase)
         
         #Generate dictionary
         self.letterKey:dict = {}
