@@ -7,26 +7,13 @@ class App(customtkinter.CTk):
     def __init__(self) -> None:
         super().__init__()
         
-        #CONSTs
-        self.Alphabet = list(string.ascii_lowercase)
+        #All for Tkinter interface startup
+        
         #Vars
         
             #Dim Vars
         h, w = str(int(self.winfo_screenheight()/2)), str(int(self.winfo_screenwidth()/2)) # set variaible h(height) w(width) to half the native screen size
         self.defaultDimensions = w + "x" + h #make a string compatible with the tkinter geometry() function
-        
-            #Key Dictionary for Data Conversion
-        self.letterKey = {}
-
-            #Converted List
-        self.textDataCONVERTED = []
-        
-        #Obtain the data convert to array/list
-        self.textData = self.readFile()
-        self.textData = [*self.textData.lower()]
-        
-        #Generate dictionary
-        self.generateKey()
         
         #Startup GUI/Interfacing Functions
         
@@ -41,29 +28,66 @@ class App(customtkinter.CTk):
         self.appFrame.pack(pady = 25, padx = 60, fill="both", expand=True)
     
 
+        
+        self.main()
+        
+        
+        
+        
+    def main(self) -> None:
+        #CONSTs
+        self.Alphabet = list(string.ascii_lowercase)
+        
+        #Generate dictionary
+        self.letterKey:dict = {}
+        self.numberKey:dict = {}
+        self.generateKeys()
+        
+        #obtain data
+        self.textData = self.readFile()
+        self.textData = [*self.textData.lower()]
+        
         #Converter char->int
-        self.charConverter()
-        print(self.textDataCONVERTED)
+        self.textData = self.charConverter()
+        print(self.textData)
         
         #Hybrid Quicksort, Quicksort/Insertion Sort
+        self.textData = self.bubbleSort(self.textData)
+        print(self.textData)
         
-    
-    def charConverter(self) -> None:
+        self.textData = self.numConverter()
+        print(self.textData)
+        
+    def charConverter(self, ) -> list:
+        textDataCONVERTED = []
         for element in self.textData:
             if element in self.Alphabet:
-                self.textDataCONVERTED.append(self.letterKey[element])
-            else:
-                self.textDataCONVERTED.append(" ")
-                
-    def generateKey(self) -> None:
+                textDataCONVERTED.append(self.letterKey[element])
+        return textDataCONVERTED
+    
+    def numConverter(self) -> list:
+        textDataCONVERTED = []
+        for element in self.textData:
+                textDataCONVERTED.append(self.numberKey[element])
+        return textDataCONVERTED
+    
+    def generateKeys(self) -> None:
         count = 0
         for letter in self.Alphabet:
             self.letterKey.update({letter:count})
+            self.numberKey.update({count:letter})
             count +=1
-        self.letterKey.update({" ":26})
+            
+    def bubbleSort(self, data):
+        
+        for i in range(len(data)):
+            for j in range(len(data)-1):
+                if data[j] > data[j+1]:
+                    temp = data[j]
+                    data[j] = data[j+1]
+                    data[j+1] = temp
+        return data
     
-    def hybridSort(self) -> list:
-        pass
     def resetDims(self) -> None:
         self.geometry(self.defaultDimensions)
         
