@@ -1,6 +1,7 @@
 import customtkinter
 from tkinter import messagebox
 import string
+import os
 
 class App(customtkinter.CTk):
     
@@ -12,7 +13,7 @@ class App(customtkinter.CTk):
         #Vars
         
             #Dim Vars
-        h, w = str(int(self.winfo_screenheight()/2)), str(int(self.winfo_screenwidth()/2)) # set variaible h(height) w(width) to half the native screen size
+        h, w = str(int(self.winfo_screenheight()/1.5)), str(int(self.winfo_screenwidth()/1.5)) # set variaible h(height) w(width) to half the native screen size
         self.defaultDimensions = w + "x" + h #make a string compatible with the tkinter geometry() function
         
         #Startup GUI/Interfacing Functions
@@ -23,15 +24,18 @@ class App(customtkinter.CTk):
             #apply previous dimensions
         self.resetDims()
         
-            #appFrame to container widgets
-        self.tempbutton = customtkinter.CTkButton(master=self)
-        self.tempbutton.place(x = 20, y = 50)
+            #appFrame to container 
+        self.mainlabel = customtkinter.CTkLabel(master=self, width=8,height=5,text=f"TextConverter & Sorter \nversion{version}\n artyom curtis")
+        self.mainlabel.place(x = 20, y = 50)
         
         self.appFrame = customtkinter.CTkFrame(master=self)
         self.appFrame.pack(pady = 45, padx = 175, fill="both", expand=True)
         
-        self.dataTextbox = customtkinter.CTkLabel(master = self.appFrame, width=5,height=5,text="test")
-        self.dataTextbox.place(x = 0, y = 0)
+        self.dataTextboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
+        self.dataTextboxlabel.place(x=35, y=155)
+        
+        self.dataTextbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir())
+        self.dataTextbox.place(x = 20, y = 195)
         self.main()
 
     def main(self) -> None:
@@ -59,7 +63,7 @@ class App(customtkinter.CTk):
         self.textData = self.numConverter()
         print(self.textData)
         
-    def charConverter(self, ) -> list:
+    def charConverter(self) -> list:
         textDataCONVERTED = []
         for element in self.textData:
             if element in self.Alphabet:
@@ -103,5 +107,7 @@ class App(customtkinter.CTk):
         pass
     
 if __name__ == '__main__':
+    global version
+    version:str = "0.0.3"
     program = App()
     program.mainloop()
