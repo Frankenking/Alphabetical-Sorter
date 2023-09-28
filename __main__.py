@@ -8,15 +8,21 @@ class App(customtkinter.CTk):
     def __init__(self) -> None:
         super().__init__()
         
-        #All for Tkinter interface startup
+        #consts
+        self.Alphabet = tuple(string.ascii_lowercase)
         
         #Vars
         
+        #Generate dictionaries
+        self.letterKey:dict = {}
+        self.numberKey:dict = {}
+        self.generateKeys()
+        
             #Dim Vars
-        h, w = str(int(self.winfo_screenheight()/1.5)), str(int(self.winfo_screenwidth()/1.5)) # set variaible h(height) w(width) to half the native screen size
+        h, w = str(int(self.winfo_screenheight()/1.5)), str(int(self.winfo_screenwidth()/1.5)) # set variaible h(height) w(width) to 1.5 the native screen size
         self.defaultDimensions = w + "x" + h #make a string compatible with the tkinter geometry() function
         
-        #Startup GUI/Interfacing Functions
+        #Startup/Interfacing Functions
         
             #title
         self.title("Alphabetical Sorter")
@@ -31,22 +37,22 @@ class App(customtkinter.CTk):
         self.appFrame = customtkinter.CTkFrame(master=self)
         self.appFrame.pack(pady = 45, padx = 175, fill="both", expand=True)
         
-        self.dataTextboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
-        self.dataTextboxlabel.place(x=35, y=155)
+        self.dataOptionboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
+        self.dataOptionboxlabel.place(x=35, y=155)
         
-        self.dataTextbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir())
-        self.dataTextbox.place(x = 20, y = 195)
-        self.main()
+        self.dataOptionboxVAR = customtkinter.StringVar(value='')
+        self.dataOptionbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.dataOptionboxVAR, command=self.readFile)
+        self.dataOptionbox.place(x = 20, y = 195)
 
+        self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='null', command=self.charConverter)
+        self.charConverterButton.place(x=0, y=0)
+        
+        self.numConverterButton = customtkinter.CTkButton(master=self.appFrame, text='null', command=self.numConverter)
+        self.numConverterButton.place(x=0, y=100)
+        
     def main(self) -> None:
+    
         
-        #CONSTs
-        self.Alphabet = tuple(string.ascii_lowercase)
-        
-        #Generate dictionary
-        self.letterKey:dict = {}
-        self.numberKey:dict = {}
-        self.generateKeys()
         
         #obtain data
         self.textData = self.readFile()
@@ -68,14 +74,18 @@ class App(customtkinter.CTk):
         for element in self.textData:
             if element in self.Alphabet:
                 textDataCONVERTED.append(self.letterKey[element])
-        return textDataCONVERTED
-    
+            else:
+                print(f"Error Converting character {element}")
+        self.textData = textDataCONVERTED
+        print(self.textData)
+        
     def numConverter(self) -> list:
         textDataCONVERTED = []
         for element in self.textData:
                 textDataCONVERTED.append(self.numberKey[element])
-        return textDataCONVERTED
-    
+        self.textData = textDataCONVERTED
+        print(self.textData)
+        
     def generateKeys(self) -> None:
         count = 0
         for letter in self.Alphabet:
@@ -96,13 +106,13 @@ class App(customtkinter.CTk):
     def resetDims(self) -> None:
         self.geometry(self.defaultDimensions)
         
-    def readFile(self) -> str:
+    def readFile(self, file) -> str:
         
-        textFileobj =open(r"input.txt","r")  #open input.txt
-        data = textFileobj.read() #assign a variable to the data
+        textFileobj =open(file,"r")  #open input.txt
+        self.textData = textFileobj.read() #assign a variable to the data
         textFileobj.close() #close the file, no longer needed since we have the data
-        return data
-    
+        print(self.textData)
+        
     def writeFile(self):
         pass
     
