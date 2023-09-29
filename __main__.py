@@ -9,9 +9,12 @@ class App(customtkinter.CTk):
         super().__init__()
         
         #consts
-        self.Alphabet = tuple(string.ascii_lowercase)
+        self.Alphabet:tuple = tuple(string.ascii_lowercase)
         
         #Vars
+        
+        #list to store data being modified
+        self.textData:list = []
         
         #Generate dictionaries
         self.letterKey:dict = {}
@@ -44,38 +47,24 @@ class App(customtkinter.CTk):
         self.dataOptionbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.dataOptionboxVAR, command=self.readFile)
         self.dataOptionbox.place(x = 20, y = 195)
 
-        self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='null', command=self.charConverter)
+        self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to Characters', command=self.charConverter)
         self.charConverterButton.place(x=0, y=0)
         
-        self.numConverterButton = customtkinter.CTkButton(master=self.appFrame, text='null', command=self.numConverter)
+        self.numConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to Numbers', command=self.numConverter)
         self.numConverterButton.place(x=0, y=100)
         
-    def main(self) -> None:
-    
+        self.sortNumbersButton = customtkinter.CTkButton(master=self.appFrame, text='null', command= self.bubbleSort())
+        self.sortNumbersButton.place(x=200, y=0)
         
-        
-        #obtain data
-        self.textData = self.readFile()
-        self.textData = [*self.textData.lower()]
-        
-        #Converter char->int
-        self.textData = self.charConverter()
-        print(self.textData)
-        
-        #Hybrid Quicksort, Quicksort/Insertion Sort
-        self.textData = self.bubbleSort(self.textData)
-        print(self.textData)
-        
-        self.textData = self.numConverter()
-        print(self.textData)
+        self.labelReturnVAR:str = 'placeholder'
+        self.labelReturn = customtkinter.CTkLabel(master=self.appFrame, text=f'{self.labelReturnVAR}')
+        self.labelReturn.place(x=200, y= 50)
         
     def charConverter(self) -> list:
         textDataCONVERTED = []
         for element in self.textData:
             if element in self.Alphabet:
                 textDataCONVERTED.append(self.letterKey[element])
-            else:
-                print(f"Error Converting character {element}")
         self.textData = textDataCONVERTED
         print(self.textData)
         
@@ -93,15 +82,15 @@ class App(customtkinter.CTk):
             self.numberKey.update({count:letter})
             count +=1
             
-    def bubbleSort(self, data):
-        
+    def bubbleSort(self):
+        data = self.textData
         for i in range(len(data)):
             for j in range(len(data)-1):
                 if data[j] > data[j+1]:
-                    temp = data[j]
+                    _ = data[j]
                     data[j] = data[j+1]
-                    data[j+1] = temp
-        return data
+                    data[j+1] = _
+        self.textData = data
     
     def resetDims(self) -> None:
         self.geometry(self.defaultDimensions)
