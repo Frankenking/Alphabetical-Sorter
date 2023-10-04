@@ -2,6 +2,7 @@ import customtkinter
 from tkinter import messagebox
 import string
 import os
+import settings
 
 class App(customtkinter.CTk):
     
@@ -17,8 +18,8 @@ class App(customtkinter.CTk):
         self.textData:list = []
         
             #Dim Vars
-        h, w = str(int(self.winfo_screenheight()/1.5)), str(int(self.winfo_screenwidth()/1.5)) # set variaible h(height) w(width) to 1.5 the native screen size
-        self.defaultDimensions = w + "x" + h #make a string compatible with the tkinter geometry() function
+        self.h, self.w = str(int(self.winfo_screenheight()/1.5)), str(int(self.winfo_screenwidth()/1.5)) # set variaible h(height) w(width) to 1.5 the native screen size
+        self.defaultDimensions = self.w + "x" + self.h #make a string compatible with the tkinter geometry() function
         self.resizable(width=False, height=False)
         #Startup/Interfacing Functions
         
@@ -29,14 +30,14 @@ class App(customtkinter.CTk):
         self.resetDims()
         
             #appFrame for a center container 
-        self.appFrame = customtkinter.CTkFrame(master=self)
-        self.appFrame.pack(pady = 45, padx = 175, fill="both", expand=True)
+        self.appFrame = customtkinter.CTkFrame(master=self, width=int(self.w)/1.5, height=int(self.h)/1.25)
+        self.appFrame.place(x=200, y=50)
         
         #LABELS
         self.mainlabel = customtkinter.CTkLabel(master=self, width=8,height=5,text=f"TextConverter & Sorter \nversion{version}\n artyom curtis")
         self.mainlabel.place(x = 20, y = 50)
         
-        self.labelReturn = customtkinter.CTkScrollableFrame(master=self.appFrame, label_text="null", height= 0, orientation="horizontal")
+        self.labelReturn = customtkinter.CTkScrollableFrame(master=self.appFrame, label_text=" ", width=10,height= 0, orientation="horizontal")
         self.labelReturn.place(x=0, y= 50)
         
         self.dataOptionboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
@@ -45,7 +46,7 @@ class App(customtkinter.CTk):
         #LABELS
         
         #MISC
-        self.dataOptionsboxVAR = customtkinter.StringVar(value='')
+        self.dataOptionsboxVAR = customtkinter.StringVar(value='Select File')
         self.dataOptionsbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.dataOptionsboxVAR, command=self.readFile)
         self.dataOptionsbox.place(x = 20, y = 195)
 
@@ -61,7 +62,7 @@ class App(customtkinter.CTk):
         self.charConverterButton.place(x=0, y=0)
         
         #applys a bubble sort to the list so it is now sorted alphabetically
-        self.sortButton = customtkinter.CTkButton(master=self.appFrame, text='Sort Numbers', command=self.Sort)
+        self.sortButton = customtkinter.CTkButton(master=self.appFrame, text='Sort Characters', command=self.Sort)
         self.sortButton.place(x=200, y=0)
     
         
@@ -70,10 +71,10 @@ class App(customtkinter.CTk):
         #DEBUG
         if debug:
             self.invokeExceptButton = customtkinter.CTkButton(master=self.appFrame, text="Invoke Exception", command=self.invokeExcept)
-            self.invokeExceptButton.place(x=400,y=400)
+            self.invokeExceptButton.place(x=425,y=50)
             
             self.resetScreenDimensions = customtkinter.CTkButton(master=self.appFrame, text='Reset Screen Dimensions', command=self.resetDims)
-            self.resetScreenDimensions.place(x=400,y=0)
+            self.resetScreenDimensions.place(x=425,y=0)
         #DEBUG
         
     def invokeExcept(self):
@@ -136,7 +137,7 @@ class App(customtkinter.CTk):
     
 if __name__ == '__main__':
     global version, debug
-    debug:bool = True
+    debug:bool = settings.DEBUGSTATE()
     version:str = "0.0.7"
     program = App()
     program.mainloop()
