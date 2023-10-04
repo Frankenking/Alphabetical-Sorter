@@ -36,8 +36,8 @@ class App(customtkinter.CTk):
         self.mainlabel = customtkinter.CTkLabel(master=self, width=8,height=5,text=f"TextConverter & Sorter \nversion{version}\n artyom curtis")
         self.mainlabel.place(x = 20, y = 50)
         
-        self.labelReturn = customtkinter.CTkLabel(master=self.appFrame, text="placeholder")
-        self.labelReturn.place(x=200, y= 50)
+        self.labelReturn = customtkinter.CTkScrollableFrame(master=self.appFrame, label_text="null", height= 0, orientation="horizontal")
+        self.labelReturn.place(x=0, y= 50)
         
         self.dataOptionboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
         self.dataOptionboxlabel.place(x=35, y=155)
@@ -55,6 +55,7 @@ class App(customtkinter.CTk):
         
         self.quitButton = customtkinter.CTkButton(master=self, text="Close App", command=self.quit)
         self.quitButton.place(x=20,y=250)
+        
         #converts the string text data to a list
         self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to List', command=self.convertTolist)
         self.charConverterButton.place(x=0, y=0)
@@ -79,7 +80,7 @@ class App(customtkinter.CTk):
         raise Exception
     
     def updateReturnLabel(self) -> None:
-        self.labelReturn.configure(text = self.textData)
+        self.labelReturn.configure(label_text = f"{str(self.textData)}")
     
     def convertTolist(self) -> None:
         """
@@ -136,6 +137,6 @@ class App(customtkinter.CTk):
 if __name__ == '__main__':
     global version, debug
     debug:bool = True
-    version:str = "0.0.3"
+    version:str = "0.0.7"
     program = App()
     program.mainloop()
