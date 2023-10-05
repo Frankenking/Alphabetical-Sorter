@@ -1,17 +1,18 @@
+from typing import Optional, Tuple, Union
 import customtkinter
 from tkinter import messagebox
 import string
 import os
 import settings
-
+import statistics
+        
 class App(customtkinter.CTk):
     
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, fg_color: str | Tuple[str, str] | None = None, **kwargs) -> None:
+        super().__init__(fg_color, **kwargs)
         
         #consts
         self.Alphabet = tuple(string.ascii_letters)
-        print(self.Alphabet)
         #Vars
         
         #list to store data being modified
@@ -50,6 +51,9 @@ class App(customtkinter.CTk):
         self.dataOptionsbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.dataOptionsboxVAR, command=self.readFile)
         self.dataOptionsbox.place(x = 20, y = 195)
 
+        self.writeOptionsboxVAR = customtkinter.StringVar(value='Select File')
+        self.writeOptionsbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.writeOptionsboxVAR, command = self.writeFile)
+        self.writeOptionsbox.place(x = 20, y = 300)
         #MISC
         
         #BUTTONS 
@@ -64,8 +68,9 @@ class App(customtkinter.CTk):
         #applys a bubble sort to the list so it is now sorted alphabetically
         self.sortButton = customtkinter.CTkButton(master=self.appFrame, text='Sort Characters', command=self.Sort)
         self.sortButton.place(x=200, y=0)
-    
-        
+
+        self.dataModeButton = customtkinter.CTkButton(master=self.appFrame, text='Find Most Common Letter', command=self.dataMode)
+        self.dataModeButton.place(x=0,y=150)
         #BUTTONS
 
         #DEBUG
@@ -82,6 +87,9 @@ class App(customtkinter.CTk):
     
     def updateReturnLabel(self) -> None:
         self.labelReturn.configure(label_text = f"{str(self.textData)}")
+    
+    def dataMode(self) -> str:
+        print(statistics.mode(self.textData))
     
     def convertTolist(self) -> None:
         """
@@ -129,12 +137,14 @@ class App(customtkinter.CTk):
         textFileobj.close() #close the file, no longer needed since we have the data
         self.updateReturnLabel()
         
-    def writeFile(self):
+    def writeFile(self, file):
         """
         Writes the data into the output.txt file
         """
-        pass
-    
+        textFileobj =open(file, 'w')
+        textFileobj.write(''.join(self.textData))
+        textFileobj.close()
+        
 if __name__ == '__main__':
     global version, debug
     debug:bool = settings.DEBUGSTATE()
