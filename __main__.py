@@ -5,15 +5,17 @@ import string
 import os
 import settings
 import statistics
-        
+            
 class App(customtkinter.CTk):
-    
+            
     def __init__(self, fg_color: str | Tuple[str, str] | None = None, **kwargs) -> None:
         super().__init__(fg_color, **kwargs)
         
         #consts
         self.Alphabet = tuple(string.ascii_letters)
         #Vars
+        
+        self.rawLength:int = 0
         
         #list to store data being modified
         self.textData:list = []
@@ -38,8 +40,8 @@ class App(customtkinter.CTk):
         self.mainlabel = customtkinter.CTkLabel(master=self, width=8,height=5,text=f"TextConverter & Sorter \nversion{version}\n artyom curtis")
         self.mainlabel.place(x = 20, y = 50)
         
-        self.labelReturn = customtkinter.CTkScrollableFrame(master=self.appFrame, label_text=" ", width=10,height= 0, orientation="horizontal")
-        self.labelReturn.place(x=0, y= 50)
+        self.labelReturn = customtkinter.CTkEntry(master=self.appFrame, width=300, height= 90)
+        self.labelReturn.place(x=25, y= 75)
         
         self.dataOptionboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
         self.dataOptionboxlabel.place(x=35, y=155)
@@ -63,30 +65,31 @@ class App(customtkinter.CTk):
         
         #converts the string text data to a list
         self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to List', command=self.convertTolist)
-        self.charConverterButton.place(x=0, y=0)
+        self.charConverterButton.place(x=25, y=25)
         
         #applys a bubble sort to the list so it is now sorted alphabetically
         self.sortButton = customtkinter.CTkButton(master=self.appFrame, text='Sort Characters', command=self.Sort)
-        self.sortButton.place(x=200, y=0)
+        self.sortButton.place(x=200, y=25)
 
         self.dataModeButton = customtkinter.CTkButton(master=self.appFrame, text='Find Most Common Letter', command=self.dataMode)
-        self.dataModeButton.place(x=0,y=150)
+        self.dataModeButton.place(x=25,y=200)
         #BUTTONS
 
         #DEBUG
         if debug:
             self.invokeExceptButton = customtkinter.CTkButton(master=self.appFrame, text="Invoke Exception", command=self.invokeExcept)
-            self.invokeExceptButton.place(x=425,y=50)
+            self.invokeExceptButton.place(x=425,y=300)
             
             self.resetScreenDimensions = customtkinter.CTkButton(master=self.appFrame, text='Reset Screen Dimensions', command=self.resetDims)
-            self.resetScreenDimensions.place(x=425,y=0)
+            self.resetScreenDimensions.place(x=400, y=300)
         #DEBUG
         
     def invokeExcept(self):
         raise Exception
     
     def updateReturnLabel(self) -> None:
-        self.labelReturn.configure(label_text = f"{str(self.textData)}")
+        self.labelReturn.delete(0, self.rawLength ** 2)
+        self.labelReturn.insert(0, self.textData)
     
     def dataMode(self) -> str:
         print(statistics.mode(self.textData))
@@ -135,6 +138,7 @@ class App(customtkinter.CTk):
         textFileobj =open(file,"r")  #open input.txt and read
         self.textData = textFileobj.read() #assign a variable to the data read
         textFileobj.close() #close the file, no longer needed since we have the data
+        self.rawLength = len(self.textData)
         self.updateReturnLabel()
         
     def writeFile(self, file):
@@ -149,5 +153,5 @@ if __name__ == '__main__':
     global version, debug
     debug:bool = settings.DEBUGSTATE()
     version:str = "0.0.7"
-    program = App()
-    program.mainloop()
+    app = App()
+    app.mainloop()
