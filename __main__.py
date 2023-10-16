@@ -1,4 +1,3 @@
-from typing import Optional, Tuple, Union
 import customtkinter
 from tkinter import messagebox
 import string
@@ -8,8 +7,8 @@ import statistics
             
 class App(customtkinter.CTk):
             
-    def __init__(self, fg_color: str | Tuple[str, str] | None = None, **kwargs) -> None:
-        super().__init__(fg_color, **kwargs)
+    def __init__(self) -> None:
+        super().__init__()
         
         #consts
         self.Alphabet = tuple(string.ascii_letters)
@@ -21,7 +20,7 @@ class App(customtkinter.CTk):
         self.textData:list = []
         
             #Dim Vars
-        self.h, self.w = str(int(self.winfo_screenheight()/1.5)), str(int(self.winfo_screenwidth()/1.5)) # set variaible h(height) w(width) to 1.5 the native screen size
+        self.h, self.w = str(int(self.winfo_screenheight()/2.5)), str(int(self.winfo_screenwidth()/3)) # set variaible h(height) w(width) to 1.5 the native screen size
         self.defaultDimensions = self.w + "x" + self.h #make a string compatible with the tkinter geometry() function
         self.resizable(width=False, height=False)
         #Startup/Interfacing Functions
@@ -41,7 +40,7 @@ class App(customtkinter.CTk):
         self.mainlabel.place(x = 20, y = 50)
         
         self.labelReturn = customtkinter.CTkEntry(master=self.appFrame, width=300, height= 90)
-        self.labelReturn.place(x=25, y= 75)
+        self.labelReturn.place(x=75, y= 25)
         
         self.dataOptionboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
         self.dataOptionboxlabel.place(x=35, y=155)
@@ -55,24 +54,24 @@ class App(customtkinter.CTk):
 
         self.writeOptionsboxVAR = customtkinter.StringVar(value='Select File')
         self.writeOptionsbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.writeOptionsboxVAR, command = self.writeFile)
-        self.writeOptionsbox.place(x = 20, y = 300)
+        self.writeOptionsbox.place(x = 20, y = 295)
         #MISC
         
         #BUTTONS 
         
         self.quitButton = customtkinter.CTkButton(master=self, text="Close App", command=self.quit)
-        self.quitButton.place(x=20,y=250)
+        self.quitButton.place(x=20,y=245)
         
         #converts the string text data to a list
         self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to List', command=self.convertTolist)
-        self.charConverterButton.place(x=25, y=25)
+        self.charConverterButton.place(x=25, y=150)
         
         #applys a bubble sort to the list so it is now sorted alphabetically
         self.sortButton = customtkinter.CTkButton(master=self.appFrame, text='Sort Characters', command=self.Sort)
-        self.sortButton.place(x=200, y=25)
+        self.sortButton.place(x=25, y=200)
 
         self.dataModeButton = customtkinter.CTkButton(master=self.appFrame, text='Find Most Common Letter', command=self.dataMode)
-        self.dataModeButton.place(x=25,y=200)
+        self.dataModeButton.place(x=25,y=250)
         #BUTTONS
 
         #DEBUG
@@ -92,8 +91,9 @@ class App(customtkinter.CTk):
         self.labelReturn.insert(0, self.textData)
     
     def dataMode(self) -> str:
-        print(statistics.mode(self.textData))
-    
+        letterMode = statistics.mode(self.textData)
+        messagebox.showinfo(title='Most Common Letter', message=letterMode)
+        
     def convertTolist(self) -> None:
         """
         Fuction loops through all characters in the string and checks if it is in the alphabet (so no numbers, spaces, special characters etc.) 
@@ -112,7 +112,7 @@ class App(customtkinter.CTk):
         
     def Sort(self) -> None:
         """
-        Python handles ascii the same as binary so there is no need to work with integers and using just the characters will suffice
+        Python handles characters the same as integers so there is no need to work with integers and using just the characters will suffice
         Basic Bubble sort with n^2 complexity
         """
         
@@ -128,13 +128,15 @@ class App(customtkinter.CTk):
         
     def resetDims(self) -> None:
         """
-        Called when the dimensions need to be reset or just returned to default
+        Called when the dimensions need to be reset or just returned to default for debugging
         """
         
         self.geometry(self.defaultDimensions)
         
     def readFile(self, file) -> str:
-        
+        """
+        Reads the file choosen in the option box on the GUI
+        """
         textFileobj =open(file,"r")  #open input.txt and read
         self.textData = textFileobj.read() #assign a variable to the data read
         textFileobj.close() #close the file, no longer needed since we have the data
@@ -143,7 +145,7 @@ class App(customtkinter.CTk):
         
     def writeFile(self, file):
         """
-        Writes the data into the output.txt file
+        Writes the data into the file choosen in the option box on the GUI
         """
         textFileobj =open(file, 'w')
         textFileobj.write(''.join(self.textData))
@@ -152,6 +154,6 @@ class App(customtkinter.CTk):
 if __name__ == '__main__':
     global version, debug
     debug:bool = settings.DEBUGSTATE()
-    version:str = "0.0.7"
+    version:str = "0.2"
     app = App()
     app.mainloop()
