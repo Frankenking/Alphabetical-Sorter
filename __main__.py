@@ -4,7 +4,8 @@ import string
 import os
 import settings
 import statistics
-            
+import binascii
+
 class App(customtkinter.CTk):
             
     def __init__(self) -> None:
@@ -20,7 +21,7 @@ class App(customtkinter.CTk):
         self.textData:list = []
         
             #Dim Vars
-        self.h, self.w = str(int(self.winfo_screenheight()/2.5)), str(int(self.winfo_screenwidth()/3)) # set variaible h(height) w(width) to 1.5 the native screen size
+        self.h, self.w = str(int(self.winfo_screenheight()/2)), str(int(self.winfo_screenwidth()/2)) # set variaible h(height) w(width) to 1/2 the native screen size
         self.defaultDimensions = self.w + "x" + self.h #make a string compatible with the tkinter geometry() function
         self.resizable(width=False, height=False)
         #Startup/Interfacing Functions
@@ -37,31 +38,38 @@ class App(customtkinter.CTk):
         
         #LABELS
         self.mainlabel = customtkinter.CTkLabel(master=self, width=8,height=5,text=f"TextConverter & Sorter \nversion{version}\n artyom curtis")
-        self.mainlabel.place(x = 20, y = 50)
+        self.mainlabel.place(x = 20, y = 25)
         
         self.labelReturn = customtkinter.CTkEntry(master=self.appFrame, width=300, height= 90)
         self.labelReturn.place(x=75, y= 25)
         
         self.dataOptionboxlabel = customtkinter.CTkLabel(master = self, text= "File Selection")
-        self.dataOptionboxlabel.place(x=35, y=155)
+        self.dataOptionboxlabel.place(x=35, y=75)
         
+        self.typeLabel = customtkinter.CTkLabel(master=self, text="Output Type")
+        self.typeLabel.place(x=25,y=235)
         #LABELS
         
         #MISC
-        self.dataOptionsboxVAR = customtkinter.StringVar(value='Select File')
+        self.dataOptionsboxVAR = customtkinter.StringVar(value='Select Input File')
         self.dataOptionsbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.dataOptionsboxVAR, command=self.readFile)
-        self.dataOptionsbox.place(x = 20, y = 195)
+        self.dataOptionsbox.place(x = 20, y = 110)
 
-        self.writeOptionsboxVAR = customtkinter.StringVar(value='Select File')
+        self.writeOptionsboxVAR = customtkinter.StringVar(value='Select Output File')
         self.writeOptionsbox = customtkinter.CTkOptionMenu(master = self, values=os.listdir(), variable=self.writeOptionsboxVAR, command = self.writeFile)
-        self.writeOptionsbox.place(x = 20, y = 295)
+        self.writeOptionsbox.place(x = 20, y = 145)
+        
+        
+        self.outputTypeBINARY = customtkinter.CTkCheckBox(master=self, text='BINARY', onvalue=1, offvalue=0)
+        self.outputTypeBINARY.place(x = 20, y = 265)
         #MISC
         
         #BUTTONS 
         
         self.quitButton = customtkinter.CTkButton(master=self, text="Close App", command=self.quit)
-        self.quitButton.place(x=20,y=245)
+        self.quitButton.place(x=20,y=200)
         
+        self.clearInput = customtkinter.CTkButton(master=self.appFrame, text="Clear Data", command=self.clearData)
         #converts the string text data to a list
         self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to List', command=self.convertTolist)
         self.charConverterButton.place(x=25, y=150)
@@ -72,6 +80,9 @@ class App(customtkinter.CTk):
 
         self.dataModeButton = customtkinter.CTkButton(master=self.appFrame, text='Find Most Common Letter', command=self.dataMode)
         self.dataModeButton.place(x=25,y=250)
+        
+        self.lengthButton = customtkinter.CTkButton(master=self.appFrame, text="Length of Text", command=self.getLength)
+        self.lengthButton.place(x=225, y=150)
         #BUTTONS
 
         #DEBUG
@@ -86,11 +97,17 @@ class App(customtkinter.CTk):
     def invokeExcept(self):
         raise Exception
     
+    def clearData(self):
+        pass
+    
     def updateReturnLabel(self) -> None:
         self.labelReturn.delete(0, self.rawLength ** 2)
         self.labelReturn.insert(0, self.textData)
     
-    def dataMode(self) -> str:
+    def getLength(self) -> None:
+        messagebox.showinfo(title='Length', message=self.rawLength)
+    
+    def dataMode(self) -> None:
         letterMode = statistics.mode(self.textData)
         messagebox.showinfo(title='Most Common Letter', message=letterMode)
         
@@ -147,8 +164,21 @@ class App(customtkinter.CTk):
         """
         Writes the data into the file choosen in the option box on the GUI
         """
+        
+        
+        if self.outputTypeBINARY.get() ==1:
+            l,m=[],[]
+            for i in self.textData:
+                l.append(ord(i))
+            for i in l:
+                m.append(int(bin(i)[2:]))
+            self.textData = m
+            self.textData = str(self.textData)
+        self.textData=' '.join(self.textData)
+            
+        print(self.textData)
         textFileobj =open(file, 'w')
-        textFileobj.write(''.join(self.textData))
+        textFileobj.write(str(self.textData))
         textFileobj.close()
         
 if __name__ == '__main__':
