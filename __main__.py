@@ -4,10 +4,9 @@ import string
 import os
 import settings
 import statistics
-import binascii
 
 class App(customtkinter.CTk):
-            
+    
     def __init__(self) -> None:
         super().__init__()
         
@@ -81,7 +80,7 @@ class App(customtkinter.CTk):
         self.clearInput.place(x=225, y=200)
         
         #reset data
-        self.resetInput = customtkinter.CTkButton(master=self.appFrame, text="Reset Input", command=self.resetData)
+        self.resetInput = customtkinter.CTkButton(master=self.appFrame, text="Reset Input", command=self.updateReturnLabel)
         self.resetInput.place(x=225, y=250)
         
         #converts the string text data to a list
@@ -110,13 +109,6 @@ class App(customtkinter.CTk):
             self.resetScreenDimensions = customtkinter.CTkButton(master=self.appFrame, text='Reset Screen Dimensions', command=self.resetDims)
             self.resetScreenDimensions.place(x=400, y=300)
         #DEBUG
-    
-    def resetData(self) -> None:
-        """
-        Resets the Data incase other characters are inputed into the entry widget
-        """
-        
-        self.updateReturnLabel()
         
     def clearData(self) -> None:
         """
@@ -129,7 +121,7 @@ class App(customtkinter.CTk):
         
     def updateReturnLabel(self) -> None:
         """
-        Used by many methods and widgets in order to update the middle entry widget, removes previous data, inserts new data
+        Used by methods and widgets in order to update the middle entry widget, removes previous data, inserts new data
         """
         
         self.labelReturn.delete(0, self.rawLength ** 2)
@@ -200,7 +192,11 @@ class App(customtkinter.CTk):
         Reads the file choosen in the option box on the GUI
         """
         
-        textFileobj =open(file,"r")  #open input.txt and read
+        try:
+            textFileobj =open(file,"r")  #open input.txt and read
+        except:
+            messagebox.showerror(title="File Selection Error", message="Invalid File Please Try Again")
+            return
         self.textData = textFileobj.read() #assign a variable to the data read
         textFileobj.close() #close the file, no longer needed since we have the data
         self.rawLength = len(self.textData)
@@ -211,7 +207,7 @@ class App(customtkinter.CTk):
         Writes the data into the file choosen in the option box on the GUI
         """
         
-        #binary converter
+        #binary converter using pythons bult in functions
         if self.outputTypeBINARY.get() ==1:
             l,m=[],[]
             for i in self.textData:
@@ -226,10 +222,10 @@ class App(customtkinter.CTk):
         textFileobj =open(file, 'w')
         textFileobj.write(outputData)
         textFileobj.close()
-        
+
 if __name__ == '__main__':
     global version, debug
     debug:bool = settings.DEBUGSTATE()
-    version:str = "1.1"
+    version:str = "1.3"
     app = App()
     app.mainloop()
