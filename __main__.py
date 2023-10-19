@@ -1,3 +1,9 @@
+"""
+__main__.py
+The main program file for the alphabetical sorter
+10/19
+"""
+
 import customtkinter
 from tkinter import messagebox
 import string
@@ -226,6 +232,6 @@ class App(customtkinter.CTk):
 if __name__ == '__main__':
     global version, debug
     debug:bool = settings.DEBUGSTATE()
-    version:str = "1.3"
+    version:str = "1.4"
     app = App()
     app.mainloop()
