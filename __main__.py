@@ -18,6 +18,7 @@ class App(customtkinter.CTk):
         
         #consts
         self.Alphabet = tuple(string.ascii_letters)
+        
         #Vars
         
         self.rawLength:int = 0
@@ -212,18 +213,18 @@ class App(customtkinter.CTk):
         """
         Writes the data into the file choosen in the option box on the GUI
         """
-        
+        textData = self.textData
         #binary converter using pythons bult in functions
         if self.outputTypeBINARY.get() ==1:
             l,m=[],[]
-            for i in self.textData:
+            for i in textData:
                 l.append(ord(i))
             for i in l:
                 m.append(str(bin(i)[2:]))
-            self.textData = m
+            textData = m
         
         #convert to one concat string
-        outputData = ''.join(self.textData)
+        outputData = ''.join(textData)
         
         textFileobj =open(file, 'w')
         textFileobj.write(outputData)
