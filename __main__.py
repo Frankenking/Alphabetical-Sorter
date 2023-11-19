@@ -70,6 +70,8 @@ class App(customtkinter.CTk):
         self.quitButton.place(x=20,y=200)
         
         self.clearInput = customtkinter.CTkButton(master=self.appFrame, text="Clear Data", command=self.clearData)
+        self.clearInput.place(x=225, y=200)
+        
         #converts the string text data to a list
         self.charConverterButton = customtkinter.CTkButton(master=self.appFrame, text='Convert Data to List', command=self.convertTolist)
         self.charConverterButton.place(x=25, y=150)
@@ -98,7 +100,8 @@ class App(customtkinter.CTk):
         raise Exception
     
     def clearData(self):
-        pass
+        self.textData = []
+        self.updateReturnLabel()
     
     def updateReturnLabel(self) -> None:
         self.labelReturn.delete(0, self.rawLength ** 2)
@@ -174,7 +177,6 @@ class App(customtkinter.CTk):
                 m.append(int(bin(i)[2:]))
             self.textData = m
             self.textData = str(self.textData)
-        self.textData=' '.join(self.textData)
             
         print(self.textData)
         textFileobj =open(file, 'w')
